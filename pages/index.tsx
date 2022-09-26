@@ -9,9 +9,9 @@ import calculateTimeArray from './helpers/TimerHelper';
 export interface BestTimes {
   currentTime: string;
   bestTimes: {
-    times: number[];
-    dates: string[];
-  };
+    time: number;
+    date: string;
+  }[];
 }
 
 const Home: NextPage = () => {
@@ -19,24 +19,22 @@ const Home: NextPage = () => {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
   ]);
   const [time, setTime] = useState(0);
-  const [timeArray, setTimeArray] = useState<Array<number>>([]);
+  const [timeArray, setTimeArray] = useState<string>('');
   const [intervalId, setIntervalId] = useState<number>(0);
+
   const [bestTimes, setBestTimes] = useState<BestTimes>({
     currentTime: '',
-    bestTimes: {
-      times: [0, 0, 0, 0, 0],
-      dates: ['-', '-', '-', '-', '-'],
-    },
+    bestTimes: [
+      { time: 0, date: '-' },
+      { time: 0, date: '-' },
+      { time: 0, date: '-' },
+      { time: 0, date: '-' },
+      { time: 0, date: '-' },
+    ],
   });
 
-  // const [log, setLog] = useState<number[]>([]);
   useEffect(() => {
     const shuffled = _.shuffle([...numbers]);
-    // const a = [];
-    // for (let i = 0; i < shuffled.length; i++) {
-    //   a[shuffled[i] - 1] = i;
-    // }
-    // setLog([...a]);
     setNumbers([...shuffled]);
     localStorage.setItem('best times', JSON.stringify(bestTimes));
   }, []);
@@ -57,31 +55,38 @@ const Home: NextPage = () => {
     const temp: BestTimes = bestTimes;
     if (time != 0) {
       const today = new Date();
+      console.log(temp.bestTimes);
       for (let i = 0; i < 5; i++) {
-        if (temp.bestTimes.times[i] == 0) {
-          temp.bestTimes.times[i] = time;
-          temp.bestTimes.dates[i] =
+        if (temp.bestTimes[i].time == 0) {
+          temp.bestTimes[i].time = time;
+          temp.bestTimes[i].date =
             today.getDate() +
             '-' +
             (today.getMonth() + 1) +
             '-' +
             today.getFullYear();
           break;
-        } else if (time < temp.bestTimes.times[i]) {
-          for (let j = 4; j > i; j--) {
-            temp.bestTimes.times[j] = temp.bestTimes.times[j - 1];
+        } else {
+          if (time < temp.bestTimes[i].time) {
+            console.log(time);
+            const j = {
+              time: time,
+              date:
+                today.getDate() +
+                '-' +
+                (today.getMonth() + 1) +
+                '-' +
+                today.getFullYear(),
+            };
+            temp.bestTimes.splice(i, 0, j);
+            temp.bestTimes.pop();
+            break;
           }
-          temp.bestTimes.times[i] = time;
-          temp.bestTimes.dates[i] =
-            today.getDate() +
-            '-' +
-            (today.getMonth() + 1) +
-            '-' +
-            today.getFullYear();
-          break;
         }
       }
     }
+    setBestTimes(temp);
+    localStorage.setItem('best times', JSON.stringify(bestTimes));
   };
 
   const handleReset = () => {

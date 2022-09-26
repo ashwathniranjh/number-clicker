@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import Navbar from './components/Navbar';
+
 const about: NextPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center bg-zinc-900 text-gray-50 ">

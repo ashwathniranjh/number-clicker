@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@font-face {
+  font-family: 'mood type';
+  src: url('/fonts/mood_type.ttf');
+}
+
+.heading {
+  text-transform: lowercase;
+  /* font-family: 'mood type'; */
+  font-family: 'Press Start 2P', cursive;
+  font-weight: 700;
+}
