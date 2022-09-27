@@ -18,6 +18,7 @@ Number clicker is an aim training game where the goal is to click numbers 1-25 i
       - [Stack used for project](#stack-used-for-project)
       - [Features Implemented](#features-implemented)
       - [Upcoming Features](#upcoming-features)
+      - [Setup](#setup)
 
 #### Stack used for project
 
@@ -39,3 +40,12 @@ The subsequent version of the project will contain the listed features:
 - Firebase integration for authentication and user specific experience.
 - Firebase firestore integration for leaderboard.
 - Local storage utilisation for unauthenticated users.
+
+#### Setup
+
+Follow the below steps to setup the repo on your device
+
+```
+npm i
+npm run dev
+```
