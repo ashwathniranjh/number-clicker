@@ -5,7 +5,9 @@ import NumberGrid from './components/NumberGrid';
 import { useEffect, useState } from 'react';
 import Timer from './components/Timer';
 import calculateTimeArray from './helpers/TimerHelper';
-
+import { useAuth } from '../context/AuthContext';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
 export interface BestTimes {
   currentTime: string;
   bestTimes: {
@@ -15,6 +17,7 @@ export interface BestTimes {
 }
 
 const Home: NextPage = () => {
+  const { currentUser } = useAuth();
   const [numbers, setNumbers] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
   ]);
@@ -37,7 +40,41 @@ const Home: NextPage = () => {
     const shuffled = _.shuffle([...numbers]);
     setNumbers([...shuffled]);
     localStorage.setItem('best times', JSON.stringify(bestTimes));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // const { loadingTimes, error, bestTimes, setBestTimes } = useFetchTimes();
+    if (currentUser != null) {
+      const fetchData = async () => {
+        try {
+          const docRef = doc(db, 'users', currentUser.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setBestTimes(docSnap.data().bestTimes);
+          }
+        } catch (err) {
+          // setError('Failed to load best times');
+          console.log(err);
+        }
+        // finally {
+        //   setLoadingTimes(false);
+        // }
+      };
+      fetchData();
+    } else {
+      setBestTimes({
+        currentTime: '',
+        bestTimes: [
+          { time: 0, date: '-' },
+          { time: 0, date: '-' },
+          { time: 0, date: '-' },
+          { time: 0, date: '-' },
+          { time: 0, date: '-' },
+        ],
+      });
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     setTimeArray(calculateTimeArray(time));
@@ -50,7 +87,7 @@ const Home: NextPage = () => {
     setIntervalId(interval);
   };
 
-  const handleStop = () => {
+  const handleStop = async () => {
     clearInterval(intervalId);
     const temp: BestTimes = bestTimes;
     if (time != 0) {
@@ -86,6 +123,10 @@ const Home: NextPage = () => {
       }
     }
     setBestTimes(temp);
+    if (currentUser) {
+      const userRef = doc(db, 'users', currentUser.uid);
+      await setDoc(userRef, bestTimes);
+    }
     localStorage.setItem('best times', JSON.stringify(bestTimes));
   };
 
