@@ -1,13 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import dotenv from 'dotenv';
+dotenv.config();
 const firebaseConfig = {
-  apiKey: 'AIzaSyDx45HbqMORU6eS6tmYPYZQ7xokY6YA1q4',
-  authDomain: 'number-clicker.firebaseapp.com',
-  projectId: 'number-clicker',
-  storageBucket: 'number-clicker.appspot.com',
-  messagingSenderId: '410005011430',
-  appId: '1:410005011430:web:7c1d4a42f4f5455f19f427',
+  apiKey: process.env.NEXT_APP_API_KEY,
+  authDomain: process.env.NEXT_APP_AUTH_DOMAIN,
+  projectId: process.env.NEXT_APP_PROJECT_ID,
+  storageBucket: process.env.NEXT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_APP_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
